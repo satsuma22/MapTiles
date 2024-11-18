@@ -1,4 +1,5 @@
 # MapTiles
+![Example Image](maptiles_screenshot.png)
 
 ## Table of Contents
 - [About the Project](#about-the-project)
