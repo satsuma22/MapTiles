@@ -27,24 +27,13 @@ RasterTileRender::RasterTileRender(const RasterTileData& tile, double refLat, do
     
     float box[] =
     {
-        (float)bottomLeftCartesian[0], (float)bottomLeftCartesian[1], 0, 0, 0,
-        (float)topRightCartesian[0]  , (float)bottomLeftCartesian[1], 0, 1, 0,
-        (float)topRightCartesian[0]  , (float)topRightCartesian[1]  , 0, 1, 1,
-        (float)bottomLeftCartesian[0], (float)bottomLeftCartesian[1], 0, 0, 0,
-        (float)topRightCartesian[0]  , (float)topRightCartesian[1]  , 0, 1, 1,
-        (float)bottomLeftCartesian[0], (float)topRightCartesian[1]  , 0, 0, 1,
+        (float)bottomLeftCartesian[0], 0, -(float)bottomLeftCartesian[1], 0, 0,
+        (float)topRightCartesian[0]  , 0, -(float)bottomLeftCartesian[1], 1, 0,
+        (float)topRightCartesian[0]  , 0, -(float)topRightCartesian[1]  , 1, 1,
+        (float)bottomLeftCartesian[0], 0, -(float)bottomLeftCartesian[1], 0, 0,
+        (float)topRightCartesian[0]  , 0, -(float)topRightCartesian[1]  , 1, 1,
+        (float)bottomLeftCartesian[0], 0, -(float)topRightCartesian[1]  , 0, 1,
     };
-    
-    /*
-    std::cout << "Raster Tile: ["
-        << tile.m_zoom << ", "
-        << tile.m_x << ", "
-        << tile.m_y << "] ("
-        << bottomLeftCartesian[0] << ", "
-        << bottomLeftCartesian[1] << ", "
-        << topRightCartesian[0] << ", "
-        << topRightCartesian[1] << ")\n";
-    */
 
     m_vertexBuffer = std::make_shared<VertexBuffer>(box, sizeof(box));
 

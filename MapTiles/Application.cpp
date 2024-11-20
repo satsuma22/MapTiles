@@ -45,7 +45,7 @@ Application::Application(double lat, double lon, GlobalConfig config)
     std::array<double, 2> pos = wgs84::toCartesian({ m_Config.ReferencePoint.lat, m_Config.ReferencePoint.lon }, { lat, lon });
     float altitude = 100;
 
-    m_Camera = Camera(glm::vec3(pos[0], pos[1], altitude), glm::vec3(0, 1, 0), glm::vec3(0, 0, 1));
+    m_Camera = Camera(glm::vec3(pos[0], 100, -pos[1]), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
     m_TileManager.Init(lat, lon, altitude, m_Config);
 }
 
@@ -92,7 +92,7 @@ void Application::Run()
 
     //================================ Attribution =======================================================
     Shader attributionShader("AttributionVertex.glsl", "AttributionFragment.glsl");
-    Attribution attribution("../MapTiles/render/res/attribution.png");
+    Attribution attribution("attribution.png");
     //====================================================================================================
 
     //m_TileManager.Update();

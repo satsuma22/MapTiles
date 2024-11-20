@@ -8,16 +8,43 @@
 #include <stb_image.h>
 
 #include <memory>
+#include <fstream>
+#include <iostream>
 
 class Attribution
 {
 public:
-	Attribution(const char* filepath) 
+	Attribution(std::string filename) 
 	{
 		stbi_set_flip_vertically_on_load(1);
 		
+		m_AttributionDirectories.push_back("./");
+		m_AttributionDirectories.push_back("../MapTiles/render/glsl/");
+		m_AttributionDirectories.push_back("../../MapTiles/render/glsl/");
+		m_AttributionDirectories.push_back("render/glsl/");
+
+		std::string path;
+		std::fstream file;
+
+		for (auto& directory : m_AttributionDirectories)
+		{
+			file.open(directory + filename);
+			if (file.is_open())
+			{
+				path = (directory + filename);
+				break;
+			}
+		}
+
+		if (!file.is_open())
+			std::cout << "WARNING: Couldn't find attribution image.\n";
+		else
+			file.close();
+
 		int width, height, nChannels;
-		unsigned char* image = stbi_load(filepath, &width, &height, &nChannels, 4);
+		const char* filePath = path.c_str();
+
+		unsigned char* image = stbi_load(filePath, &width, &height, &nChannels, 4);
 
 		m_Texture = std::make_shared<Texture>(image, height, width);
 
@@ -45,4 +72,6 @@ public:
 	std::shared_ptr<VertexArray> m_VertexArray;
 	std::shared_ptr<VertexBuffer> m_VertexBuffer;
 	std::shared_ptr<Texture> m_Texture;
+
+	std::vector<std::string> m_AttributionDirectories;
 };

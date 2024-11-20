@@ -96,7 +96,7 @@ void Camera::MoveCamera(MovementType type, float delta)
         m_Forward = glm::rotate(q, m_Forward);
     }
 
-    m_Position.z = std::max(4.0f, m_Position.z);
+    //m_Position.z = std::max(4.0f, m_Position.z);
 
     Update();
 }

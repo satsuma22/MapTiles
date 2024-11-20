@@ -79,6 +79,7 @@ ShaderProgramSource Shader::ParseShader()
 	if (!VSFile.is_open())
 	{
 		std::cout << "Could not find Shader Source in " << m_VSFilePath << std::endl;
+		std::cin.get();
 		exit(-1);
 	}
 	
@@ -103,6 +104,7 @@ ShaderProgramSource Shader::ParseShader()
 	if (!FSFile.is_open())
 	{
 		std::cout << "Could not find Shader Source in " << m_FSFilePath << std::endl;
+		std::cin.get();
 		exit(-1);
 	}
 

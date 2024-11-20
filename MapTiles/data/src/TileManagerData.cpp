@@ -89,7 +89,7 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 	// Do the coordinate conversion here
 	{
 		//Timer t1("Coordinate Conversion");
-	//tile3DData.ConvertTo3DCoordinates(m_config.ReferencePoint.lat, m_config.ReferencePoint.lon);
+	tile3DData.ConvertTo3DCoordinates(m_config.ReferencePoint.lat, m_config.ReferencePoint.lon);
 	}
 
 	std::lock_guard<std::mutex> lockActive(m_MutexTile3Ds);

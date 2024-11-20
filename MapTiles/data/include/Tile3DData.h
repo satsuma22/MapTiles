@@ -12,5 +12,6 @@ public:
 	void ConvertTo3DCoordinates(double refLat, double refLon);
 public:
 	double m_latMin, m_lonMin, m_latMax, m_lonMax;
-	std::vector<glm::dvec3> m_mesh;
+	std::vector<glm::dvec3> m_meshWGS;
+	std::vector<glm::vec3> m_meshCartesian;
 };
