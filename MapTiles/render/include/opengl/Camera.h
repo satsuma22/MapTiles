@@ -18,14 +18,14 @@ public:
 	};
 
 public:
-    Camera() {}
+    Camera();
     Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 worldup);
 
     inline const glm::mat4& GetViewMatrix() { return m_View; }
     inline const glm::mat4& GetProjectionMatrix() { return m_Projection; }
 
-    glm::vec3 GetPosition() { return m_Position; }
-    glm::vec3 GetProjectedPosition();
+    glm::vec3 GetPosition() const { return m_Position; }
+    glm::vec3 GetProjectedPosition() const;
 
     void MoveCamera(MovementType type, float delta);
 

@@ -62,7 +62,7 @@ void Shader::SetUniformMat4f(const std::string& name, glm::mat4& mat)
 	Unbind();
 }
 
-ShaderProgramSource Shader::ParseShader()
+ShaderProgramSource Shader::ParseShader() const
 {
 	std::string line;
 	std::stringstream VS;
@@ -154,7 +154,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 	return program;
 }
 
-int Shader::GetUniformLocation(const std::string& name)
+int Shader::GetUniformLocation(const std::string& name) const
 {
 	int location = glGetUniformLocation(m_Id,name.c_str());
 

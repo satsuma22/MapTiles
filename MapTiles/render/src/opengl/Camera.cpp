@@ -5,6 +5,12 @@
 
 #include <algorithm>
 
+Camera::Camera()
+    :   m_View(0), m_Projection(0), m_Position(0), m_Forward(0), m_Right(0), m_Up(0), m_WorldUp(0),
+        m_Speed(0), m_RotationSpeed(0), m_FOV(0), m_Height(0), m_Width(0), m_NearClip(0), m_FarClip(0)
+{
+}
+
 Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 worldup)
     : m_View(1.0f), m_Projection(1.0f), m_Right(0.0f), m_Up(0.0f)
 {
@@ -24,7 +30,7 @@ Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 worldup)
     UpdateProjectionMatrix();
 }
 
-glm::vec3 Camera::GetProjectedPosition()
+glm::vec3 Camera::GetProjectedPosition() const
 {
     float t = -m_Position.z / (std::min(-0.25f, m_Forward.z));
     glm::vec3 ProjectedPos = m_Position + t * m_Forward;
@@ -95,8 +101,6 @@ void Camera::MoveCamera(MovementType type, float delta)
         glm::quat q = glm::normalize(glm::cross(glm::angleAxis(pitchDelta, m_Right), glm::angleAxis(-yawDelta, m_WorldUp)));
         m_Forward = glm::rotate(q, m_Forward);
     }
-
-    //m_Position.z = std::max(4.0f, m_Position.z);
 
     Update();
 }

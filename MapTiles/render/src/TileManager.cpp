@@ -317,7 +317,7 @@ void TileManager::SetPosition(double lat, double lon, double altitude)
 {
     double EPSILON = 1e-6;
     
-    if ((fabs(m_lat - lat) < EPSILON) && (fabs(m_lon - lon) < EPSILON) && (GetZoom() == GetZoom(altitude)))
+    if ((fabs(m_lat - lat) < EPSILON) && (fabs(m_lon - lon) < EPSILON) && (GetZoom() == GetZoomAtAltitude(altitude)))
     {
         return;
     }

@@ -16,5 +16,5 @@ struct GlobalConfig
 	int NeighbourhoodFetchSizeRasterTile = 2;
 	int NeighbourhoodFetchSizeTile3D = 1;
 
-	int max_fps = -1;
+	int MaxFPS = -1;
 };

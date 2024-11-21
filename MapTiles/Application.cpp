@@ -6,7 +6,7 @@
 
 #include "opengl/Attribution.h"
 
-void ProcessInput(GLFWwindow* window, Camera& camera, float delta)
+static void ProcessInput(GLFWwindow* window, Camera& camera, float delta)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.MoveCamera(Camera::FORWARD, delta);
@@ -26,7 +26,7 @@ void ProcessInput(GLFWwindow* window, Camera& camera, float delta)
         camera.MoveCamera(Camera::DOWN_SPIN, delta);
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
@@ -61,7 +61,7 @@ int Application::Init()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a windowed mode window and its OpenGL context 
-    m_Window = glfwCreateWindow(800, 600, "Research Project", NULL, NULL);
+    m_Window = glfwCreateWindow(1080, 720, "MapTiles", NULL, NULL);
     if (!m_Window)
     {
         glfwTerminate();
@@ -101,7 +101,7 @@ void Application::Run()
 
     double deltaTime = 0;
     double lastTime = glfwGetTime();
-    int fps = m_Config.max_fps;
+    int fps = m_Config.MaxFPS;
 
     while (!glfwWindowShouldClose(m_Window))
     {
@@ -132,7 +132,8 @@ void Application::Run()
         glClearColor(0.18, 0.27, 0.51, 1.0f);
         //glClearColor(0.4, 0.4, 0.5, 1.0f);
 
-        for (auto& rasterTile : m_TileManager.m_ActiveRasterTiles)
+        auto& activeRasterTiles = m_TileManager.GetActiveRasterTiles();
+        for (auto& rasterTile : activeRasterTiles)
         {
             m_Renderer.Draw(rasterTile.second, rasterTileShader);
         }
@@ -141,7 +142,8 @@ void Application::Run()
         tile3DShader.SetUniformMat4f("ViewProjectionMatrix", VP);
         tile3DShader.SetUniform3f("CameraPos", cameraPos.x, cameraPos.y, cameraPos.z);
 
-        for (auto& tile3D : m_TileManager.m_ActiveTile3Ds)
+        auto& activeTile3Ds = m_TileManager.GetActiveTiles3D();
+        for (auto& tile3D : activeTile3Ds)
         {
             m_Renderer.Draw(tile3D.second, tile3DShader);
         }

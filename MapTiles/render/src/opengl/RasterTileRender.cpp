@@ -6,11 +6,11 @@
 
 
 RasterTileRender::RasterTileRender(const RasterTileData& tile, double refLat, double refLon)
-	: m_texture(nullptr), m_vertexArray(nullptr), m_vertexBuffer(nullptr)
+	: m_Texture(nullptr), m_VertexArray(nullptr), m_VertexBuffer(nullptr)
 {
 
-    m_texture = std::make_shared<Texture>(tile.m_image, tile.m_height, tile.m_width);
-    m_vertexArray = std::make_shared<VertexArray>();
+    m_Texture = std::make_shared<Texture>(tile.m_image, tile.m_height, tile.m_width);
+    m_VertexArray = std::make_shared<VertexArray>();
 
     // Calculate the bounding quad
     double top = tiley2lat(tile.m_y, tile.m_zoom);
@@ -35,13 +35,13 @@ RasterTileRender::RasterTileRender(const RasterTileData& tile, double refLat, do
         (float)bottomLeftCartesian[0], 0, -(float)topRightCartesian[1]  , 0, 1,
     };
 
-    m_vertexBuffer = std::make_shared<VertexBuffer>(box, sizeof(box));
+    m_VertexBuffer = std::make_shared<VertexBuffer>(box, sizeof(box));
 
     VertexBufferLayout layout;
     layout.Push<float>(3);
     layout.Push<float>(2);
 
-    m_vertexArray->AddBuffer(*m_vertexBuffer, layout);
+    m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
 }
 
 RasterTileRender::~RasterTileRender()

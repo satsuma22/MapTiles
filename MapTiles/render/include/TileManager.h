@@ -25,7 +25,24 @@ public:
 	TileManager();
 	void Init(double lat, double lon, int altitude, GlobalConfig& config);
 	void Finalize();
+	
+	void SetPosition(double lat, double lon, double altitude);
 
+	// Performs one update of the TileManager. It consists of the following:
+	// 1. Add 1 tile from the queue for each tile type
+	// 2. Checks if the last update was finished or if enough time has passed. If not, returns. Else it continues to the next step
+	// 3. Swaps the active and background tiles
+	// 4. Generates a neighbourhood set based on the current location. The number of neighbours is specified in the GlobalConfig object
+	// 5. Remove tiles from the active set and the queue that are not in the current neighbourhood set
+	// 6. Removes tiles from the neighbour set that are already in the active set and the queue
+	// 7. Generates an aysnchronous request to create a tile for every tile still remaining in the neighbour set using std::threads
+	void Update();
+
+
+	std::map<RasterTileIndex, RasterTileRender>& GetActiveRasterTiles() { return m_ActiveRasterTiles; }
+	std::map<Tile3DIndex, Tile3DRender>& GetActiveTiles3D() { return  m_ActiveTile3Ds; }
+
+private:
 	bool AllActiveTilesProcessed();
 	bool AllBackgroundTilesProcessed();
 	bool AllQueuesEmpty();
@@ -53,27 +70,15 @@ public:
 	// Remove the tile3Ds from neighbour set that are already active or in the queue
 	void PruneNeighbourSetTile3D();
 
-	void SetPosition(double lat, double lon, double altitude);
-
 	// Adds the tile on the top of the Raster Tile queue to the active set of Raster Tiles
 	void AddRasterTileFromQueue();
 	// Adds the tile on the top of the Tile3D queue to the active set of Tile3Ds
 	void AddTile3DFromQueue();
 
-	// Performs one update of the TileManager. It consists of the following:
-	// 1. Add 1 tile from the queue for each tile type
-	// 2. Checks if the last update was finished or if enough time has passed. If not, returns. Else it continues to the next step
-	// 3. Swaps the active and background tiles
-	// 4. Generates a neighbourhood set based on the current location. The number of neighbours is specified in the GlobalConfig object
-	// 5. Remove tiles from the active set and the queue that are not in the current neighbourhood set
-	// 6. Removes tiles from the neighbour set that are already in the active set and the queue
-	// 7. Generates an aysnchronous request to create a tile for every tile still remaining in the neighbour set using std::threads
-	void Update();
+	inline float GetZoom() const { return std::min(19.0f, std::log2f(40075016 * std::cos(glm::radians(m_lat)) / (std::max(1.0, m_altitude)))); /*Circumference of earth = 40075016*/ }
+	inline float GetZoomAtAltitude(float altitude)  const { return std::min(19.0f, std::log2f(40075016 * std::cos(glm::radians(m_lat)) / (std::max(1.0f, altitude)))); /*Circumference of earth = 40075016*/ }
 
-	inline float GetZoom() { return std::min(19.0f, std::log2f(40075016 * std::cos(glm::radians(m_lat)) / (std::max(1.0, m_altitude)))); /*Circumference of earth = 40075016*/ }
-	inline float GetZoom(float altitude) { return std::min(19.0f, std::log2f(40075016 * std::cos(glm::radians(m_lat)) / (std::max(1.0f, altitude)))); /*Circumference of earth = 40075016*/ }
-
-public:
+private:
 	double m_lat, m_lon, m_altitude;
 
 	bool m_moved;

@@ -18,16 +18,16 @@ void Renderer::Draw(const Attribution& attribution, const Shader& shader) const
 
 void Renderer::Draw(const RasterTileRender& tile, const Shader& shader) const
 {
-	tile.m_vertexArray->Bind();
-	tile.m_texture->Bind();
+	tile.m_VertexArray->Bind();
+	tile.m_Texture->Bind();
 	
-	Draw(*(tile.m_vertexBuffer), shader);
+	Draw(*(tile.m_VertexBuffer), shader);
 }
 
 void Renderer::Draw(const Tile3DRender& tile, const Shader& shader) const
 {
-	tile.m_vertexArray->Bind();
-	Draw(*(tile.m_vertexBuffer), shader);
+	tile.m_VertexArray->Bind();
+	Draw(*(tile.m_VertexBuffer), shader);
 }
 
 void Renderer::Clear() const

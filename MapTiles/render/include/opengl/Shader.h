@@ -26,11 +26,11 @@ public:
 
 	static std::vector<std::string> ShaderDirectories;
 private:
-	ShaderProgramSource ParseShader();
+	ShaderProgramSource ParseShader() const;
 	unsigned int CompileShader(unsigned int type, const std::string& source);
 	unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
 
-	int GetUniformLocation(const std::string& name);
+	int GetUniformLocation(const std::string& name) const;
 
 private:
 	unsigned int m_Id;

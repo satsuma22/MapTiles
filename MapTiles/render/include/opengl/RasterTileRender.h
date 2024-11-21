@@ -18,7 +18,7 @@ public:
 	~RasterTileRender();
 
 public:
-	std::shared_ptr<Texture> m_texture;
-	std::shared_ptr<VertexArray> m_vertexArray;
-	std::shared_ptr<VertexBuffer> m_vertexBuffer;
+	std::shared_ptr<Texture> m_Texture;
+	std::shared_ptr<VertexArray> m_VertexArray;
+	std::shared_ptr<VertexBuffer> m_VertexBuffer;
 };

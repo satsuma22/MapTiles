@@ -8,10 +8,10 @@ class OSMRasterTileProcessor
 public:
 	OSMRasterTileProcessor(OSMRasterTileLoader& loader);
 
-	inline unsigned char* GetImage() { return m_image; }
-	inline int GetHeight() { return m_height; }
-	inline int GetWidth() { return m_width; }
-	inline int GetSize() { return m_size; }
+	inline unsigned char* GetImage() const { return m_image; }
+	inline int GetHeight() const { return m_height; }
+	inline int GetWidth() const { return m_width; }
+	inline int GetSize() const { return m_size; }
 
 private:
 	unsigned char* m_image;

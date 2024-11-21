@@ -19,9 +19,9 @@ public:
 		stbi_set_flip_vertically_on_load(1);
 		
 		m_AttributionDirectories.push_back("./");
-		m_AttributionDirectories.push_back("../MapTiles/render/glsl/");
-		m_AttributionDirectories.push_back("../../MapTiles/render/glsl/");
-		m_AttributionDirectories.push_back("render/glsl/");
+		m_AttributionDirectories.push_back("../MapTiles/render/res/");
+		m_AttributionDirectories.push_back("../../MapTiles/render/res/");
+		m_AttributionDirectories.push_back("render/res/");
 
 		std::string path;
 		std::fstream file;

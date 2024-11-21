@@ -16,6 +16,6 @@ public:
 	Tile3DRender(const Tile3DData& tile, double refLat, double refLon);
 	~Tile3DRender();
 public:
-	std::shared_ptr<VertexArray> m_vertexArray;
-	std::shared_ptr<VertexBuffer> m_vertexBuffer;
+	std::shared_ptr<VertexArray> m_VertexArray;
+	std::shared_ptr<VertexBuffer> m_VertexBuffer;
 };
