@@ -19,7 +19,7 @@ Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 worldup)
 	m_WorldUp = worldup;
 
     m_Speed = 100.0f;
-    m_RotationSpeed = 2.0f;
+    m_RotationSpeed = 1.0f;
     m_FOV = 75.0f;
     m_Height = 1080;
     m_Width = 1920;
@@ -32,9 +32,9 @@ Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 worldup)
 
 glm::vec3 Camera::GetProjectedPosition() const
 {
-    float t = -m_Position.z / (std::min(-0.25f, m_Forward.z));
+    float t = -m_Position.y / (std::min(-0.25f, m_Forward.y));
     glm::vec3 ProjectedPos = m_Position + t * m_Forward;
-    ProjectedPos.z = m_Position.z;
+    ProjectedPos.y = m_Position.y;
 
     return ProjectedPos;
 }
@@ -100,6 +100,19 @@ void Camera::MoveCamera(MovementType type, float delta)
     {
         glm::quat q = glm::normalize(glm::cross(glm::angleAxis(pitchDelta, m_Right), glm::angleAxis(-yawDelta, m_WorldUp)));
         m_Forward = glm::rotate(q, m_Forward);
+
+        /*
+        // Apply yaw (around Y axis, or World Up axis)
+        glm::quat yawQuat = glm::angleAxis(yawDelta, m_WorldUp);
+        // Apply pitch (around Right axis)
+        glm::quat pitchQuat = glm::angleAxis(pitchDelta, m_Right);
+
+        // Combine the rotations
+        glm::quat rotation = yawQuat * pitchQuat;
+
+        // Rotate the forward vector by the combined rotation
+        m_Forward = glm::rotate(rotation, m_Forward);
+        */
     }
 
     Update();

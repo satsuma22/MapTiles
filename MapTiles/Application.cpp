@@ -5,6 +5,7 @@
 #include <Windows.h>
 
 #include "opengl/Attribution.h"
+#include "../../Timer.h"
 
 static void ProcessInput(GLFWwindow* window, Camera& camera, float delta)
 {
@@ -45,7 +46,7 @@ Application::Application(double lat, double lon, GlobalConfig config)
     std::array<double, 2> pos = wgs84::toCartesian({ m_Config.ReferencePoint.lat, m_Config.ReferencePoint.lon }, { lat, lon });
     float altitude = 100;
 
-    m_Camera = Camera(glm::vec3(pos[0], 100, -pos[1]), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
+    m_Camera = Camera(glm::vec3(pos[0], 0, -pos[1]), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
     m_TileManager.Init(lat, lon, altitude, &m_Config);
 }
 
@@ -117,24 +118,11 @@ void Application::Run()
 
         //glm::vec3 cameraPos = m_Camera.GetProjectedPosition();
         glm::vec3 cameraPos = m_Camera.GetPosition();
-        std::array<double, 2> cameraPosWGS84 = wgs84::fromCartesian({m_Config.ReferencePoint.lat, m_Config.ReferencePoint.lon}, {cameraPos.x, cameraPos.y});
-
-        glm::mat4 view(1.0f);
-        view = m_Camera.GetProjectionMatrix();
-        view = glm::transpose(view);
-        std::cout << "View Matrix:\n";
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-                std::cout << view[i][j] << " ";
-            std::cout << "\n";
-        }
-
+        std::array<double, 2> cameraPosWGS84 = wgs84::fromCartesian({m_Config.ReferencePoint.lat, m_Config.ReferencePoint.lon}, {cameraPos.x, -cameraPos.z});
         glm::mat4 VP(1.0f);
         VP = m_Camera.GetProjectionMatrix() * m_Camera.GetViewMatrix();
-
-        m_TileManager.CalculateViewFrustum(glm::transpose(VP));
-        m_TileManager.SetPosition(cameraPosWGS84[0], cameraPosWGS84[1], cameraPos.z);
+        m_TileManager.CalculateViewFrustum(VP);
+        m_TileManager.SetPosition(cameraPosWGS84[0], cameraPosWGS84[1], cameraPos.y);
         m_TileManager.Update();
 
         ProcessInput(m_Window, m_Camera, deltaTime);

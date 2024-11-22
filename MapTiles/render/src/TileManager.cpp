@@ -119,8 +119,8 @@ void TileManager::GenerateRasterTileFrustumNeighbours()
 			bool isVisible = true;
 			glm::vec3 tileMin(0), tileMax(0);
 
-			double lat_min = tiley2lat(j, zoom);
-			double lat_max = tiley2lat(j + 1, zoom);
+			double lat_min = tiley2lat(j + 1, zoom);
+			double lat_max = tiley2lat(j, zoom);
 			double lon_min = tilex2long(i, zoom);
 			double lon_max = tilex2long(i + 1, zoom);
 
@@ -131,14 +131,14 @@ void TileManager::GenerateRasterTileFrustumNeighbours()
 
 			tileMin[0] = min[0];
 			tileMin[1] = 0.0f;
-			tileMin[2] = -min[1];
+			tileMin[2] = -max[1];
 
 			tileMax[0] = max[0];
 			tileMax[1] = 1.0f;
-			tileMax[2] = -max[1];
+			tileMax[2] = -min[1];
 
-			for (int i = 0; i < 6; i++) {
-				if (IsBoxCompletelyBehindPlane(tileMin, tileMax, frustum_planes[i])) {
+			for (int k = 0; k < 6; k++) {
+				if (IsBoxCompletelyBehindPlane(tileMin, tileMax, frustum_planes[k])) {
 					isVisible = false;
 					break;
 				}
@@ -161,7 +161,6 @@ void TileManager::GenerateRasterTileFrustumNeighbours()
 
 		}
 	}
-	//std::cout << "Raster Tile Count: " << count << std::endl;
 }
 
 void TileManager::GenerateTile3DFrustumNeighbours()
@@ -186,11 +185,11 @@ void TileManager::GenerateTile3DFrustumNeighbours()
 
 			tileMin[0] = min[0];
 			tileMin[1] = 0.0f;
-			tileMin[2] = -min[1];
+			tileMin[2] = -max[1];
 
 			tileMax[0] = max[0];
 			tileMax[1] = 100.0f;
-			tileMax[2] = -max[1];
+			tileMax[2] = -min[1];
 
 			for (int i = 0; i < 6; i++)
 			{
@@ -222,7 +221,6 @@ void TileManager::GenerateTile3DFrustumNeighbours()
 			}
 		}
 	}
-	//std::cout << "3D Tile Count: " << count << std::endl;
 }
 
 void TileManager::GenerateRasterTileNeighbours()
@@ -523,12 +521,23 @@ bool TileManager::IsBoxCompletelyBehindPlane(const glm::vec3& boxMin, const glm:
 
 void TileManager::CalculateViewFrustum(const glm::mat4& mvp)
 {
+	/*
 	frustum_planes[0] = (mvp[3] + mvp[0]);
 	frustum_planes[1] = (mvp[3] - mvp[0]);
 	frustum_planes[2] = (mvp[3] + mvp[1]);
 	frustum_planes[3] = (mvp[3] - mvp[1]);
 	frustum_planes[4] = (mvp[3] + mvp[2]);
 	frustum_planes[5] = (mvp[3] - mvp[2]);
+	*/
+
+	glm::mat4 mvpt = glm::transpose(mvp);
+
+	frustum_planes[0] = (mvpt[3] + mvpt[0]);
+	frustum_planes[1] = (mvpt[3] - mvpt[0]);
+	frustum_planes[2] = (mvpt[3] + mvpt[1]);
+	frustum_planes[3] = (mvpt[3] - mvpt[1]);
+	frustum_planes[4] = (mvpt[3] + mvpt[2]);
+	frustum_planes[5] = (mvpt[3] - mvpt[2]);
 
 	constexpr double double_min = std::numeric_limits<double>::min();
 	constexpr double double_max = std::numeric_limits<double>::max();
@@ -569,6 +578,5 @@ void TileManager::CalculateViewFrustum(const glm::mat4& mvp)
 	frustum_max_lat = std::ceil(frustum_max[0] / size) * size;
 	frustum_max_lon = std::ceil(frustum_max[1] / size) * size;
 
-	std::cout << "(" << frustum_min_lat << ", " << frustum_min_lon << ") (" << frustum_max_lat << ", " << frustum_max_lon << ")\n";
 }
 

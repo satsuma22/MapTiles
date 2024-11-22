@@ -42,7 +42,7 @@ void OSMRasterTileLoader::FetchTile()
 	while ((int)m_result.error() || GetHTTPStatus() != 200)
 	{
 		// Avoid making too many requests at the same time
-		Sleep(500);
+		Sleep(50);
 		m_result = client.Get(m_query);
 	}
 }
