@@ -16,5 +16,9 @@ struct GlobalConfig
 	int NeighbourhoodFetchSizeRasterTile = 2;
 	int NeighbourhoodFetchSizeTile3D = 1;
 
+	bool FrustumBasedTileGeneration = false;
+	int FrustumRasterTilesCount = 10;
+	double FrustumTile3DMaxDistance = 0.03;
+
 	int MaxFPS = -1;
 };

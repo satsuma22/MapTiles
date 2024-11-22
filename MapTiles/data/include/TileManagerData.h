@@ -67,14 +67,14 @@ public:
 	TileManagerData();
 	~TileManagerData();
 
-	void Init(GlobalConfig config);
+	void Init(GlobalConfig* config);
 	
 	RasterTileData& GetRasterTile(int zoom, int x, int y);
 	RasterTileData& GetRasterTile(int zoom, double lat, double lon);
 	Tile3DData& GetTile3D(double lat, double lon);
 
 private:
-	GlobalConfig m_config;
+	GlobalConfig* m_config;
 
 	std::map<RasterTileIndex, RasterTileData> m_RasterTileCache;
 	std::map<Tile3DIndex, Tile3DData> m_Tile3DCache;

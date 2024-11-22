@@ -15,9 +15,10 @@ TileManagerData::TileManagerData()
 
 TileManagerData::~TileManagerData()
 {
+	m_config = nullptr;
 }
 
-void TileManagerData::Init(GlobalConfig config)
+void TileManagerData::Init(GlobalConfig* config)
 {
 	m_config = config;
 }
@@ -76,7 +77,7 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 	}
 
 	//Timer t("s");
-	double size = m_config.Tile3DSize;
+	double size = m_config->Tile3DSize;
 	OSMDataLoader loader(lat, lon, lat + size, lon + size);
 	loader.FetchOSMWays();
 	//t.~Timer();
@@ -89,11 +90,12 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 	// Do the coordinate conversion here
 	{
 		//Timer t1("Coordinate Conversion");
-	tile3DData.ConvertTo3DCoordinates(m_config.ReferencePoint.lat, m_config.ReferencePoint.lon);
+	tile3DData.ConvertTo3DCoordinates(m_config->ReferencePoint.lat, m_config->ReferencePoint.lon);
 	}
 
 	std::lock_guard<std::mutex> lockActive(m_MutexTile3Ds);
 	m_Tile3DCache[index] = tile3DData;
+	std::cout << "[Tile Manager] Tile 3D Cache Size: " << m_Tile3DCache.size() << "\n";
 
 	return m_Tile3DCache[index];
 }

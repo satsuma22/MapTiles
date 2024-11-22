@@ -46,7 +46,7 @@ Application::Application(double lat, double lon, GlobalConfig config)
     float altitude = 100;
 
     m_Camera = Camera(glm::vec3(pos[0], 100, -pos[1]), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
-    m_TileManager.Init(lat, lon, altitude, m_Config);
+    m_TileManager.Init(lat, lon, altitude, &m_Config);
 }
 
 int Application::Init()
@@ -115,16 +115,30 @@ void Application::Run()
         }
         //std::cout << "(OPENGL) FPS: " << 1 / deltaTime << "\n";
 
-        glm::vec3 cameraPos = m_Camera.GetProjectedPosition();
+        //glm::vec3 cameraPos = m_Camera.GetProjectedPosition();
+        glm::vec3 cameraPos = m_Camera.GetPosition();
         std::array<double, 2> cameraPosWGS84 = wgs84::fromCartesian({m_Config.ReferencePoint.lat, m_Config.ReferencePoint.lon}, {cameraPos.x, cameraPos.y});
 
+        glm::mat4 view(1.0f);
+        view = m_Camera.GetProjectionMatrix();
+        view = glm::transpose(view);
+        std::cout << "View Matrix:\n";
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+                std::cout << view[i][j] << " ";
+            std::cout << "\n";
+        }
+
+        glm::mat4 VP(1.0f);
+        VP = m_Camera.GetProjectionMatrix() * m_Camera.GetViewMatrix();
+
+        m_TileManager.CalculateViewFrustum(glm::transpose(VP));
         m_TileManager.SetPosition(cameraPosWGS84[0], cameraPosWGS84[1], cameraPos.z);
         m_TileManager.Update();
 
         ProcessInput(m_Window, m_Camera, deltaTime);
 
-        glm::mat4 VP(1.0f);
-        VP = m_Camera.GetProjectionMatrix() * m_Camera.GetViewMatrix();
         rasterTileShader.SetUniformMat4f("ViewProjectionMatrix", VP);
 
         // Render here 
@@ -142,7 +156,7 @@ void Application::Run()
         tile3DShader.SetUniformMat4f("ViewProjectionMatrix", VP);
         tile3DShader.SetUniform3f("CameraPos", cameraPos.x, cameraPos.y, cameraPos.z);
 
-        auto& activeTile3Ds = m_TileManager.GetActiveTiles3D();
+        auto& activeTile3Ds = m_TileManager.GetActiveTile3Ds();
         for (auto& tile3D : activeTile3Ds)
         {
             m_Renderer.Draw(tile3D.second, tile3DShader);
