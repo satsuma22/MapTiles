@@ -20,7 +20,7 @@ add_executable(MapTiles ${SOURCES} "3rd/tinyxml2-master/tinyxml2.cpp" ${HEADERS}
 
 target_compile_definitions(MapTiles PRIVATE GLEW_STATIC)
 
-target_include_directories(MapTiles PUBLIC "MapTiles/data/include" "MapTiles/render/include" "3rd/WGS84toCartesian-master" "3rd/stb_image" "3rd/glm-master/glm" "3rd/tinyxml2-master" "3rd/earcut.hpp-master/include" "3rd/cpp-httplib-master" "3rd/glew/include" "3rd/glfw/include")
+target_include_directories(MapTiles PUBLIC "MapTiles/" "MapTiles/data/include" "MapTiles/render/include" "3rd/WGS84toCartesian-master" "3rd/stb_image" "3rd/glm-master/glm" "3rd/tinyxml2-master" "3rd/earcut.hpp-master/include" "3rd/cpp-httplib-master" "3rd/glew/include" "3rd/glfw/include")
 
 target_link_libraries(MapTiles PRIVATE glew32s opengl32 glfw3)
 

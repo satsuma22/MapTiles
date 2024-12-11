@@ -7,9 +7,9 @@
 
 #include "utils.h"
 
-#include "../../Timer.h"
+#include "Timer.h"
 
-TileManagerData::TileManagerData()
+TileManagerData::TileManagerData() : m_config(nullptr)
 {
 }
 

@@ -6,7 +6,7 @@
 
 TileManager::TileManager() : cam_lat(0), cam_lon(0), altitude(0), config(nullptr),
 frustum_min_lat(0), frustum_max_lat(0), frustum_min_lon(0),
-frustum_max_lon(0), min_extent({ 0, 0 }), max_extent({ 0, 0 })
+frustum_max_lon(0), min_extent({ 0, 0 }), max_extent({ 0, 0 }), frustum_bbox_min(0), frustum_bbox_max(0)
 {
 }
 

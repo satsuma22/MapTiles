@@ -2,7 +2,7 @@
 
 #include "RasterTileData.h"
 #include "Tile3DData.h"
-#include "../../Config.h"
+#include "Config.h"
 
 #include <map>
 #include <mutex>

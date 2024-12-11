@@ -2,9 +2,6 @@
 #include "utils.h"
 #include "WGS84toCartesian.hpp"
 
-#include <iostream>
-
-
 RasterTileRender::RasterTileRender(const RasterTileData& tile, double refLat, double refLon)
 	: m_Texture(nullptr), m_VertexArray(nullptr), m_VertexBuffer(nullptr)
 {
@@ -21,8 +18,6 @@ RasterTileRender::RasterTileRender(const RasterTileData& tile, double refLat, do
 
     std::array<double, 2> bottomLeftCartesian = wgs84::toCartesian({ refLat, refLon }, { bottom, left });
     std::array<double, 2> topRightCartesian = wgs84::toCartesian({ refLat, refLon }, { top, right });
-
-    //std::cout << "Tile: (" << bottomLeftCartesian[0] << ", " << bottomLeftCartesian[1] << ")\n";
 
     
     float box[] =

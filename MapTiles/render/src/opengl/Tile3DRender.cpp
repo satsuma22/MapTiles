@@ -1,9 +1,6 @@
 #include "opengl/Tile3DRender.h"
 
 #include <glm.hpp>
-#include "WGS84toCartesian.hpp"
-
-#include "../../Timer.h"
 
 #include <vector>
 

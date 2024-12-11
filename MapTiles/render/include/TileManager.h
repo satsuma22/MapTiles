@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Config.h"
+#include "Config.h"
 #include "TileManagerData.h"
 #include "RasterTileData.h"
 #include "opengl/RasterTileRender.h"

@@ -5,7 +5,7 @@
 #include <Windows.h>
 
 #include "opengl/Attribution.h"
-#include "../../Timer.h"
+#include "Timer.h"
 
 static void ProcessInput(GLFWwindow* window, Camera& camera, float delta)
 {
