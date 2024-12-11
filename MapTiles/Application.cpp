@@ -2,7 +2,15 @@
 
 #include <iostream>
 #include <stb_image.h>
-#include <Windows.h>
+
+// Define a macro that includes the correct sleep function for the current platform
+#ifdef _WIN32
+    #include <Windows.h>
+    #define Sleep(x) Sleep(x)
+#else
+    #include <unistd.h>
+    #define Sleep(x) usleep(x * 1000)
+#endif
 
 #include "opengl/Attribution.h"
 #include "Timer.h"
