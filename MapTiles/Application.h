@@ -21,6 +21,9 @@ public:
 	void Terminate();
 
 private:
+	void ProcessApplicationInput();
+
+private:
 	GlobalConfig m_Config;
 	TileManager m_TileManager;
 	Renderer m_Renderer;

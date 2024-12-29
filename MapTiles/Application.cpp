@@ -15,7 +15,9 @@
 #include "opengl/Attribution.h"
 #include "Timer.h"
 
-static void ProcessInput(GLFWwindow* window, Camera& camera, float delta)
+static int F_key_state = GLFW_RELEASE;
+
+static void ProcessCameraInput(GLFWwindow* window, Camera& camera, float delta)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.MoveCamera(Camera::FORWARD, delta);
@@ -133,7 +135,8 @@ void Application::Run()
         m_TileManager.SetPosition(cameraPosWGS84[0], cameraPosWGS84[1], cameraPos.y);
         m_TileManager.Update();
 
-        ProcessInput(m_Window, m_Camera, deltaTime);
+        ProcessCameraInput(m_Window, m_Camera, deltaTime);
+        ProcessApplicationInput();
 
         rasterTileShader.SetUniformMat4f("ViewProjectionMatrix", VP);
 
@@ -172,4 +175,18 @@ void Application::Terminate()
 {
     m_TileManager.Finalize();
     glfwTerminate();
+}
+
+void Application::ProcessApplicationInput()
+{
+	if (glfwGetKey(m_Window, GLFW_KEY_F) == GLFW_PRESS && F_key_state == GLFW_RELEASE)
+	{
+		F_key_state = GLFW_PRESS;
+		m_Config.FrustumBasedTileGeneration = !m_Config.FrustumBasedTileGeneration;
+		std::cout << "Switching to " << (m_Config.FrustumBasedTileGeneration ? "Frustum" : "Grid") << " based tile generation.\n";
+	}
+    else if (glfwGetKey(m_Window, GLFW_KEY_F) == GLFW_RELEASE && F_key_state == GLFW_PRESS)
+    {
+        F_key_state = GLFW_RELEASE;
+    }
 }
