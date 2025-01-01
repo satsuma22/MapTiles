@@ -6,6 +6,7 @@
 - [Building](#building)
 - [Usage](#usage)
 - [Configuration](#configuration)
+- [Input](#input)
 
 ## About the Project
 MapTiles is a real-time 3D enviornment visualizer. It fetches geographical data from OpenStreetMap and constructs and renders a 3D scene in real-time.
@@ -46,3 +47,11 @@ Certain settings for the application be configured via the `Config.h` file.
   * Limits the number of `Tile3Ds` generated along any one axis based on distance from the camera when `FrustumBasedTileGeneration` is enabled. The distance is measured in degrees.
 * `MaxFPS`
   * Sets the maximum framerate for the application. Can be used to reduce the load on the CPU and the GPU. `MaxFPS <= 0` leaves the framerate limit uncapped.
+
+## Inputs
+* `w` `s` `a` `d`
+  * changes the position of the agent.
+* `Up` `Down` `Left` `Right`
+  * changes the orientation of the agent.
+* `f`
+  * toggles tile generation mode between grid-based and frustum-based.  
