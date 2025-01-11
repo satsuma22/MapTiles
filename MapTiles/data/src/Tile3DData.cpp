@@ -12,6 +12,20 @@ Tile3DData::Tile3DData(double latMin, double lonMin, double latMax, double lonMa
 	: m_latMin(latMin), m_lonMin(lonMin), m_latMax(latMax), m_lonMax(lonMax)
 {
 	m_meshWGS = std::move(mesh);
+
+	// add a rect to every tile that covers the entire tile
+	m_meshWGS.push_back({ m_latMin, m_lonMin, -50 });
+	m_meshWGS.push_back({ .8, .8, .8 });
+	m_meshWGS.push_back({ m_latMax, m_lonMin, -50 });
+	m_meshWGS.push_back({ .8, .8, .8 });
+	m_meshWGS.push_back({ m_latMax, m_lonMax, -50 });
+	m_meshWGS.push_back({ .8, .8, .8 });
+	m_meshWGS.push_back({ m_latMin, m_lonMin, -50 });
+	m_meshWGS.push_back({ .8, .8, .8 });
+	m_meshWGS.push_back({ m_latMax, m_lonMax, -50 });
+	m_meshWGS.push_back({ .8, .8, .8 });
+	m_meshWGS.push_back({ m_latMin, m_lonMax, -50 });
+	m_meshWGS.push_back({ .8, .8, .8 });
 }
 
 void Tile3DData::ConvertTo3DCoordinates(double refLat, double refLon)
