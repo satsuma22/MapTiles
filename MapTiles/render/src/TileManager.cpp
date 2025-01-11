@@ -92,6 +92,9 @@ std::pair<std::array<double, 2>, std::array<double, 2>> TileManager::GetExtent()
 
 void TileManager::GenerateRasterTileFrustumNeighbours()
 {
+	// clear the neighbour set so that we don't request outdated tiles
+	neighbour_set_raster_tile.clear();
+
 	int zoom = (int)GetZoom();
 
 	int camX = long2tilex(cam_lon, zoom);
@@ -165,6 +168,9 @@ void TileManager::GenerateRasterTileFrustumNeighbours()
 
 void TileManager::GenerateTile3DFrustumNeighbours()
 {
+	// clear the neighbour set so that we don't request outdated tiles
+	neighbour_set_tile3D.clear();
+
 	double size = config->Tile3DSize;
 
 	int count = 0;
@@ -225,6 +231,9 @@ void TileManager::GenerateTile3DFrustumNeighbours()
 
 void TileManager::GenerateRasterTileNeighbours()
 {
+	// clear the neighbour set so that we don't request outdated tiles
+	neighbour_set_raster_tile.clear();
+
 	int k = config->NeighbourhoodFetchSizeRasterTile;
 
 	int centerX;
@@ -269,6 +278,9 @@ void TileManager::GenerateRasterTileNeighbours()
 
 void TileManager::GenerateTile3DNeighbours()
 {
+	// clear the neighbour set so that we don't request outdated tiles
+	neighbour_set_tile3D.clear();
+
 	int k = config->NeighbourhoodFetchSizeTile3D;
 	double size = config->Tile3DSize;
 
