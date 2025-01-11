@@ -21,4 +21,7 @@ struct GlobalConfig
 	double FrustumTile3DMaxDistance = 0.03;
 
 	int MaxFPS = -1;
+
+	int MaxRasterTileRequestThreads = 10;
+	int MaxTile3DRequestThreads = 10;
 };
