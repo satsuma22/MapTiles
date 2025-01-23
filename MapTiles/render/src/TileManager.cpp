@@ -445,7 +445,13 @@ void TileManager::GetRasterTileNeighbours()
 	for (const RasterTileIndex& itr : neighbour_set_raster_tile) {
 		const RasterTileIndex& index = itr;
 
-		if (requested_raster_tile.size() < config->MaxRasterTileRequestThreads)
+		if (m_RasterTileCache.find(index) != m_RasterTileCache.end())
+		{
+			active_raster_tile[index] = m_RasterTileCache[index];
+			to_be_removed.insert(index);
+		}
+
+		else if (requested_raster_tile.size() < config->MaxRasterTileRequestThreads)
 		{
 			std::thread t(&TileManager::AddRasterTileToQueue, this, index);
 			t.detach();
@@ -467,7 +473,13 @@ void TileManager::GetTile3DNeighbours()
 	for (const Tile3DIndex& itr : neighbour_set_tile3D) {
 		const Tile3DIndex& index = itr;
 
-		if (requested_tile3D.size() < config->MaxTile3DRequestThreads)
+		if (m_Tile3DCache.find(index) != m_Tile3DCache.end())
+		{
+			active_tile3D[index] = m_Tile3DCache[index];
+			to_be_removed.insert(index);
+		}
+
+		else if (requested_tile3D.size() < config->MaxTile3DRequestThreads)
 		{
 			std::thread t(&TileManager::AddTile3DToQueue, this, index);
 			t.detach();
@@ -511,6 +523,7 @@ void TileManager::AddRasterTiles()
 		RasterTileRender tile(element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
 
 		active_raster_tile[element.first] = tile;
+		m_RasterTileCache[element.first] = tile;
 
 		queue_raster_tiles.erase(element.first);
 	}
@@ -529,6 +542,7 @@ void TileManager::AddTile3D()
 		Tile3DRender tile(element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
 
 		active_tile3D[element.first] = tile;
+		m_Tile3DCache[element.first] = tile;
 
 		queue_tile3Ds.erase(element.first);
 	}

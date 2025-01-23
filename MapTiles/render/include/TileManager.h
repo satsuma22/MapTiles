@@ -89,4 +89,7 @@ private:
 	glm::dvec3 frustum_bbox_min, frustum_bbox_max;
 	double frustum_min_lat, frustum_max_lat, frustum_min_lon, frustum_max_lon;
 	std::array<double, 2> min_extent, max_extent;
+
+	std::map<RasterTileIndex, RasterTileRender> m_RasterTileCache;
+	std::map<Tile3DIndex, Tile3DRender> m_Tile3DCache;
 };
