@@ -548,6 +548,15 @@ void TileManager::AddTile3D()
 	}
 }
 
+void TileManager::ClearRenderCache()
+{
+	std::cout << "Clearing Render Cache\n";
+	std::cout << "Raster Tile Cache Size: " << m_RasterTileCache.size() << std::endl;
+	std::cout << "Tile3D Cache Size: " << m_Tile3DCache.size() << std::endl;
+	m_RasterTileCache.clear();
+	m_Tile3DCache.clear();
+}
+
 bool TileManager::IsBoxCompletelyBehindPlane(const glm::vec3& boxMin, const glm::vec3& boxMax,
 	const glm::vec4& plane)
 {

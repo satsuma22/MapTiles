@@ -35,6 +35,8 @@ public:
 	bool IsBoxCompletelyBehindPlane(const glm::vec3& boxMin, const glm::vec3& boxMax,
 		const glm::vec4& plane);
 
+	void ClearRenderCache();
+
 private:
 	void GenerateRasterTileFrustumNeighbours();
 	void GenerateTile3DFrustumNeighbours();

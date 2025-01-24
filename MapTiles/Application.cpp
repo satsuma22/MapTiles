@@ -16,6 +16,7 @@
 #include "Timer.h"
 
 static int F_key_state = GLFW_RELEASE;
+static int R_key_state = GLFW_RELEASE;
 
 static void ProcessCameraInput(GLFWwindow* window, Camera& camera, float delta)
 {
@@ -188,5 +189,15 @@ void Application::ProcessApplicationInput()
     else if (glfwGetKey(m_Window, GLFW_KEY_F) == GLFW_RELEASE && F_key_state == GLFW_PRESS)
     {
         F_key_state = GLFW_RELEASE;
+    }
+
+    if (glfwGetKey(m_Window, GLFW_KEY_R) == GLFW_PRESS && R_key_state == GLFW_RELEASE)
+    {
+        R_key_state = GLFW_PRESS;
+		m_TileManager.ClearRenderCache();
+    }
+    else if (glfwGetKey(m_Window, GLFW_KEY_R) == GLFW_RELEASE && R_key_state == GLFW_PRESS)
+    {
+        R_key_state = GLFW_RELEASE;
     }
 }
