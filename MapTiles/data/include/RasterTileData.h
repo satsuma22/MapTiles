@@ -4,8 +4,10 @@
 class RasterTileData
 {
 public:
-	RasterTileData();
+	//RasterTileData();
 	RasterTileData(unsigned char* image, int height, int width, int zoom, int x, int y);
+	// Move constructor
+	RasterTileData(RasterTileData&& other) noexcept;
 	~RasterTileData();
 public:
 	int m_zoom;

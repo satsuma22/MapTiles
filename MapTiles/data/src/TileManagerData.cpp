@@ -32,7 +32,8 @@ RasterTileData& TileManagerData::GetRasterTile(int zoom, int x, int y)
 
 		if (m_RasterTileCache.find(index) != m_RasterTileCache.end())
 		{
-			return m_RasterTileCache[index];
+			//return m_RasterTileCache[index];
+			return m_RasterTileCache.at(index);
 		}
 		// If we don't return from the function in the if statement above, the tile in not in the cache
 		//t.Cancel();
@@ -49,9 +50,11 @@ RasterTileData& TileManagerData::GetRasterTile(int zoom, int x, int y)
 	//t.~Timer();
 
 	std::lock_guard<std::mutex> lockActive(m_MutexRasterTiles);
-	m_RasterTileCache[index] = std::move(rasterTile);
+	//m_RasterTileCache[index] = std::move(rasterTile);
+	m_RasterTileCache.emplace(index, std::move(rasterTile));
 
-	return m_RasterTileCache[index];
+	//return m_RasterTileCache[index];
+	return m_RasterTileCache.at(index);
 }
 
 RasterTileData& TileManagerData::GetRasterTile(int zoom, double lat, double lon)
