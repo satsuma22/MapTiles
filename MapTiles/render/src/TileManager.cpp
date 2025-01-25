@@ -504,9 +504,9 @@ void TileManager::AddRasterTileToQueue(RasterTileIndex index)
 
 void TileManager::AddTile3DToQueue(Tile3DIndex index)
 {
-	Tile3DData tileData = tile_manager_data.GetTile3D(index.lat, index.lon);
+	Tile3DData& tileData = tile_manager_data.GetTile3D(index.lat, index.lon);
 	std::lock_guard<std::mutex> lock(m_MutexQueueTile3Ds);
-	queue_tile3Ds[index] = tileData;
+	queue_tile3Ds.emplace(index, tileData);
 	requested_tile3D.erase(index);
 }
 

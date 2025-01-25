@@ -71,7 +71,8 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 
 		if (m_Tile3DCache.find(index) != m_Tile3DCache.end())
 		{
-			return m_Tile3DCache[index];
+			//return m_Tile3DCache[index];
+			return m_Tile3DCache.at(index);
 		}
 		//t.Cancel();
 	}
@@ -94,9 +95,11 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 	}
 
 	std::lock_guard<std::mutex> lockActive(m_MutexTile3Ds);
-	m_Tile3DCache[index] = tile3DData;
+	//m_Tile3DCache[index] = tile3DData;
+	m_Tile3DCache.emplace(index, std::move(tile3DData));
 	std::cout << "[Tile Manager] Tile 3D Cache Size: " << m_Tile3DCache.size() << "\n";
 
-	return m_Tile3DCache[index];
+	//return m_Tile3DCache[index];
+	return m_Tile3DCache.at(index);
 }
 

@@ -7,8 +7,12 @@
 class Tile3DData
 {
 public:
-	Tile3DData();
+	//Tile3DData();
 	Tile3DData(double latMin, double lonMin, double latMax, double lonMax, std::vector<glm::dvec3>& mesh);
+	// Move constructor
+	Tile3DData(Tile3DData&& other) noexcept;
+	~Tile3DData();
+
 	void ConvertTo3DCoordinates(double refLat, double refLon);
 public:
 	double m_latMin, m_lonMin, m_latMax, m_lonMax;

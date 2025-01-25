@@ -76,7 +76,7 @@ private:
 	std::map<RasterTileIndex, RasterTileRender> active_raster_tile;
 	std::map<Tile3DIndex, Tile3DRender> active_tile3D;
 	std::map<RasterTileIndex, RasterTileData> queue_raster_tiles;
-	std::map<Tile3DIndex, Tile3DData> queue_tile3Ds;
+	std::map<Tile3DIndex, Tile3DData&> queue_tile3Ds;
 
 	mutable std::mutex m_MutexActiveRasterTiles;
 	mutable std::mutex m_MutexActiveTile3Ds;
