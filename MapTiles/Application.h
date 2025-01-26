@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glew.h>
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 #include <glm.hpp>
 
 #include "opengl/Camera.h"
@@ -22,6 +22,7 @@ public:
 
 private:
 	void ProcessApplicationInput();
+	void RenderImGui();
 
 private:
 	GlobalConfig m_Config;

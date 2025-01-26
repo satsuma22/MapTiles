@@ -6,9 +6,29 @@ set(CMAKE_GENERATOR_PLATFORM x64)
 
 project(MapTiles)
 
-file(GLOB SOURCES "MapTiles/*.cpp" "MapTiles/render/src/*.cpp" "MapTiles/render/src/opengl/*.cpp" "MapTiles/data/src/*.cpp")
+file(GLOB SOURCES 
+            "MapTiles/*.cpp" 
+            "MapTiles/render/src/*.cpp" 
+            "MapTiles/render/src/opengl/*.cpp" 
+            "MapTiles/data/src/*.cpp"
+    )
 
-file(GLOB HEADERS "MapTiles/*.h" "MapTiles/render/include/*.h" "MapTiles/render/include/opengl/*.h" "MapTiles/data/include/*.h")
+file(GLOB HEADERS 
+            "MapTiles/*.h" 
+            "MapTiles/render/include/*.h" 
+            "MapTiles/render/include/opengl/*.h" 
+            "MapTiles/data/include/*.h"
+    )
+
+set(IMGUI_SOURCES 
+            "3rd/imgui/imgui.cpp" 
+            "3rd/imgui/imgui_demo.cpp" 
+            "3rd/imgui/imgui_draw.cpp" 
+            "3rd/imgui/imgui_tables.cpp"
+            "3rd/imgui/imgui_widgets.cpp" 
+            "3rd/imgui/backends/imgui_impl_glfw.cpp" 
+            "3rd/imgui/backends/imgui_impl_opengl3.cpp"
+    )
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the build type" FORCE)
@@ -16,11 +36,29 @@ endif()
 
 link_directories("3rd/glew/x64" "3rd/glfw/lib-vc2022")
 
-add_executable(MapTiles ${SOURCES} "3rd/tinyxml2-master/tinyxml2.cpp" ${HEADERS})
+add_executable(MapTiles 
+            ${SOURCES} 
+            ${HEADERS}
+            "3rd/tinyxml2-master/tinyxml2.cpp"
+            ${IMGUI_SOURCES} 
+    )
 
 target_compile_definitions(MapTiles PRIVATE GLEW_STATIC)
 
-target_include_directories(MapTiles PUBLIC "MapTiles/" "MapTiles/data/include" "MapTiles/render/include" "3rd/WGS84toCartesian-master" "3rd/stb_image" "3rd/glm-master/glm" "3rd/tinyxml2-master" "3rd/earcut.hpp-master/include" "3rd/cpp-httplib-master" "3rd/glew/include" "3rd/glfw/include")
+target_include_directories(MapTiles PUBLIC 
+            "MapTiles/" 
+            "MapTiles/data/include" 
+            "MapTiles/render/include" 
+            "3rd/WGS84toCartesian-master" 
+            "3rd/stb_image" 
+            "3rd/glm-master/glm" 
+            "3rd/tinyxml2-master" 
+            "3rd/earcut.hpp-master/include" 
+            "3rd/cpp-httplib-master" 
+            "3rd/glew/include" 
+            "3rd/glfw/include"
+            "3rd/imgui/"
+    )
 
 target_link_libraries(MapTiles PRIVATE glew32s opengl32 glfw3)
 
