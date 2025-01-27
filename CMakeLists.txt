@@ -29,6 +29,9 @@ find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 
+if (UNIX)
+	find_package(Threads REQUIRED)
+endif()
 
 add_executable(MapTiles ${SOURCES} "3rd/tinyxml2-master/tinyxml2.cpp" ${HEADERS})
 
