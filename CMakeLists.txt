@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 if (WIN32)
 	set(CMAKE_GENERATOR_PLATFORM x64)
@@ -27,6 +27,7 @@ endif()
 
 find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(OpenGL REQUIRED)
 
 
 add_executable(MapTiles ${SOURCES} "3rd/tinyxml2-master/tinyxml2.cpp" ${HEADERS})
@@ -35,7 +36,11 @@ add_executable(MapTiles ${SOURCES} "3rd/tinyxml2-master/tinyxml2.cpp" ${HEADERS}
 
 target_include_directories(MapTiles PUBLIC "MapTiles/" "MapTiles/data/include" "MapTiles/render/include" "3rd/WGS84toCartesian-master" "3rd/stb_image" "3rd/glm-master/glm" "3rd/tinyxml2-master" "3rd/earcut.hpp-master/include" "3rd/cpp-httplib-master/")
 
-target_link_libraries(MapTiles PRIVATE opengl32 glfw GLEW::GLEW)
+target_link_libraries(MapTiles PRIVATE OpenGL::GL glfw GLEW::GLEW)
+
+if (UNIX)
+	target_link_libraries(MapTiles PRIVATE Threads::Threads)
+endif()
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT MapTiles)
 

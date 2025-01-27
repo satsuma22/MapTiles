@@ -1,5 +1,14 @@
 #include "OSMDataLoader.h"
 
+// Define a macro that includes the correct sleep function for the current platform
+#ifdef _WIN32
+#include <Windows.h>
+#define Sleep(x) Sleep(x)
+#else
+#include <unistd.h>
+#define Sleep(x) usleep(x * 1000)
+#endif
+
 OSMDataLoader::OSMDataLoader(double latMin, double lonMin, double latMax, double lonMax)
 	: m_latMin(latMin), m_lonMin(lonMin), m_latMax(latMax), m_lonMax(lonMax)
 {

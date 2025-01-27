@@ -2,6 +2,15 @@
 
 #include "utils.h"
 
+// Define a macro that includes the correct sleep function for the current platform
+#ifdef _WIN32
+#include <Windows.h>
+#define Sleep(x) Sleep(x)
+#else
+#include <unistd.h>
+#define Sleep(x) usleep(x * 1000)
+#endif
+
 OSMRasterTileLoader::OSMRasterTileLoader(int zoom, double lat, double lon)
 	: m_zoom(zoom), m_x(0), m_y(0)
 {
