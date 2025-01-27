@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_GENERATOR_PLATFORM x64)
+if (WIN32)
+	set(CMAKE_GENERATOR_PLATFORM x64)
+endif()
 
 if (WIN32)
 	set(PATH_TO_VCPKG "D:/Package" CACHE STRING "Path to vcpkg")
