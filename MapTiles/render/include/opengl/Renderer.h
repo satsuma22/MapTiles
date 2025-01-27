@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glew.h>
+#include <GL/glew.h>
 
 #include "opengl/VertexArray.h"
 #include "opengl/Shader.h"
