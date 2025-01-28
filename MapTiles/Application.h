@@ -22,6 +22,7 @@ public:
 
 private:
 	void ProcessApplicationInput();
+	void RenderImGui();
 
 private:
 	GlobalConfig m_Config;

@@ -15,6 +15,10 @@
 #include "opengl/Attribution.h"
 #include "Timer.h"
 
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+
 static int F_key_state = GLFW_RELEASE;
 static int R_key_state = GLFW_RELEASE;
 
@@ -82,12 +86,21 @@ int Application::Init()
 
     // Make the window's context current 
     glfwMakeContextCurrent(m_Window);
+	glfwSwapInterval(1); // Enable vsync
     glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
 
     if (glewInit() != GLEW_OK)
     {
         std::cout << "GLEW not initialized.\n";
     }
+
+    IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
@@ -164,6 +177,8 @@ void Application::Run()
 
         m_Renderer.Draw(attribution, attributionShader);
 
+        RenderImGui();
+
         // Swap front and back buffers 
         glfwSwapBuffers(m_Window);
 
@@ -175,6 +190,12 @@ void Application::Run()
 void Application::Terminate()
 {
     m_TileManager.Finalize();
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+	glfwDestroyWindow(m_Window);
     glfwTerminate();
 }
 
@@ -200,4 +221,26 @@ void Application::ProcessApplicationInput()
     {
         R_key_state = GLFW_RELEASE;
     }
+}
+
+void Application::RenderImGui()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::Begin("MapTiles"); 
+	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+    ImGui::Text("Tile Generation");
+	ImGui::Checkbox("Frustum Based Tile Generation", &m_Config.FrustumBasedTileGeneration);
+    ImGui::Text("Cache"); 
+    if (ImGui::Button("Clear Render Cache"))
+	{
+		m_TileManager.ClearRenderCache();
+	}
+    ImGui::End(); 
+
+    // Render ImGui
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
