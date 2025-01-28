@@ -14,9 +14,9 @@ MapTiles is a real-time 3D enviornment visualizer. It fetches geographical data 
 
 ## Dependencies
 The project has a few dependencies but the only ones that you need to manually install are:
-*`GLFW`
-*`GLEW`
-*`OpenGL`
+* `GLFW`
+* `GLEW`
+* `OpenGL`
 On Ubuntu you can install these dependencies by running the following command:
 ```bash
 sudo apt-get update
