@@ -17,6 +17,7 @@ The project has a few dependencies but the only ones that you need to manually i
 * `GLFW`
 * `GLEW`
 * `OpenGL`
+
 On Ubuntu you can install these dependencies by running the following command:
 ```bash
 sudo apt-get update
