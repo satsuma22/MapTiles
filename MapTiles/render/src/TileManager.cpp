@@ -605,6 +605,11 @@ void TileManager::ClearDataCache()
 	tile_manager_data.ClearCache();
 }
 
+void TileManager::TrimDataCache()
+{
+	tile_manager_data.TrimCache();
+}
+
 bool TileManager::IsBoxCompletelyBehindPlane(const glm::vec3& boxMin, const glm::vec3& boxMax,
 	const glm::vec4& plane)
 {

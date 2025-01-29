@@ -18,13 +18,13 @@ Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 worldup)
 	m_Forward = dir;
 	m_WorldUp = worldup;
 
-    m_Speed = 100.0f;
+    m_Speed = 1000.0f;
     m_RotationSpeed = 1.0f;
     m_FOV = 75.0f;
     m_Height = 1080;
     m_Width = 1920;
     m_NearClip = 0.1f;
-    m_FarClip = 5000.0f;
+    m_FarClip = 20000.0f;
 
     Update();
     UpdateProjectionMatrix();

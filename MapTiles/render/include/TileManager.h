@@ -39,6 +39,7 @@ public:
 	void TrimRenderCache();
 
 	void ClearDataCache();
+	void TrimDataCache();
 
 private:
 	void GenerateRasterTileFrustumNeighbours();

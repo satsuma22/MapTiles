@@ -74,6 +74,7 @@ public:
 	Tile3DData& GetTile3D(double lat, double lon);
 
 	void ClearCache();
+	void TrimCache();
 
 private:
 	GlobalConfig* m_config;
