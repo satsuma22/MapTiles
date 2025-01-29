@@ -84,3 +84,12 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 	return m_Tile3DCache.at(index);
 }
 
+void TileManagerData::ClearCache()
+{
+	std::lock_guard<std::mutex> lockRasterTiles(m_MutexRasterTiles);
+	m_RasterTileCache.clear();
+
+	std::lock_guard<std::mutex> lockTile3D(m_MutexTile3Ds);
+	m_Tile3DCache.clear();
+}
+

@@ -73,6 +73,8 @@ public:
 	RasterTileData& GetRasterTile(int zoom, double lat, double lon);
 	Tile3DData& GetTile3D(double lat, double lon);
 
+	void ClearCache();
+
 private:
 	GlobalConfig* m_config;
 

@@ -239,9 +239,9 @@ void Application::RenderImGui()
     if (ImGui::Button("Trim Rnder Cache"))
 		m_TileManager.TrimRenderCache();
     if (ImGui::Button("Clear Render Cache"))
-	{
 		m_TileManager.ClearRenderCache();
-	}
+	if (ImGui::Button("Clear Data Cache"))
+		m_TileManager.ClearDataCache();
     ImGui::End(); 
 
     // Render ImGui

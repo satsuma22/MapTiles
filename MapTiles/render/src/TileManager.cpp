@@ -600,6 +600,11 @@ void TileManager::TrimRenderCache()
 	std::cout << "Tile3D Cache Size: " << tile3D_size_before << " -> " << tile3D_size_after << std::endl;
 }
 
+void TileManager::ClearDataCache()
+{
+	tile_manager_data.ClearCache();
+}
+
 bool TileManager::IsBoxCompletelyBehindPlane(const glm::vec3& boxMin, const glm::vec3& boxMax,
 	const glm::vec4& plane)
 {

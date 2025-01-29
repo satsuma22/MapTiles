@@ -38,6 +38,8 @@ public:
 	void ClearRenderCache();
 	void TrimRenderCache();
 
+	void ClearDataCache();
+
 private:
 	void GenerateRasterTileFrustumNeighbours();
 	void GenerateTile3DFrustumNeighbours();
