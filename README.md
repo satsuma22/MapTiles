@@ -1,3 +1,5 @@
+[![CMake on a single platform](https://github.com/satsuma22/MapTiles/actions/workflows/cmake-single-platform.yml/badge.svg)](https://github.com/satsuma22/MapTiles/actions/workflows/cmake-single-platform.yml)
+
 # MapTiles
 ![Example Image](maptiles_screenshot.png)
 
