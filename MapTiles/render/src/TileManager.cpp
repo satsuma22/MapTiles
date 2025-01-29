@@ -559,6 +559,47 @@ void TileManager::ClearRenderCache()
 	m_Tile3DCache.clear();
 }
 
+void TileManager::TrimRenderCache()
+{
+	std::set<RasterTileIndex> to_be_removed_raster_tile;
+	std::set<Tile3DIndex> to_be_removed_tile3D;
+
+	for (const auto& element : m_RasterTileCache)
+	{
+		// Get the position of the tile in degrees
+		double lat = tiley2lat(element.first.y, element.first.zoom);
+		double lon = tilex2long(element.first.x, element.first.zoom);
+
+		if (std::abs(lat - cam_lat) > config->RasterTileRenderCacheTrimDistance ||
+			std::abs(lon - cam_lon) > config->RasterTileRenderCacheTrimDistance)
+			to_be_removed_raster_tile.insert(element.first);
+	}
+
+	for (const auto& element : m_Tile3DCache) {
+		// Get the position of the tile in degrees
+		double lat = element.first.lat;
+		double lon = element.first.lon;
+		if (std::abs(lat - cam_lat) > config->Tile3DRenderCacheTrimDistance ||
+			std::abs(lon - cam_lon) > config->Tile3DRenderCacheTrimDistance)
+			to_be_removed_tile3D.insert(element.first);
+	}
+
+	size_t raster_size_before = m_RasterTileCache.size();
+	size_t tile3D_size_before = m_Tile3DCache.size();
+
+	for (const auto& index : to_be_removed_raster_tile)
+		m_RasterTileCache.erase(index);
+
+	for (const auto& index : to_be_removed_tile3D)
+		m_Tile3DCache.erase(index);
+
+	size_t raster_size_after = m_RasterTileCache.size();
+	size_t tile3D_size_after = m_Tile3DCache.size();
+
+	std::cout << "Raster Tile Cache Size: " << raster_size_before << " -> " << raster_size_after << std::endl;
+	std::cout << "Tile3D Cache Size: " << tile3D_size_before << " -> " << tile3D_size_after << std::endl;
+}
+
 bool TileManager::IsBoxCompletelyBehindPlane(const glm::vec3& boxMin, const glm::vec3& boxMax,
 	const glm::vec4& plane)
 {

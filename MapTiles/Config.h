@@ -18,10 +18,13 @@ struct GlobalConfig
 
 	bool FrustumBasedTileGeneration = false;
 	int FrustumRasterTilesCount = 10;
-	double FrustumTile3DMaxDistance = 0.03;
+	double FrustumTile3DMaxDistance = 0.04;
 
-	int MaxFPS = -1;
+	int VSync = 1;
 
 	int MaxRasterTileRequestThreads = 10;
 	int MaxTile3DRequestThreads = 10;
+
+	double RasterTileRenderCacheTrimDistance = 0.4;
+	double Tile3DRenderCacheTrimDistance = 0.4;
 };

@@ -86,7 +86,7 @@ int Application::Init()
 
     // Make the window's context current 
     glfwMakeContextCurrent(m_Window);
-	glfwSwapInterval(1); // Enable vsync
+	glfwSwapInterval(m_Config.VSync); // Enable vsync
     glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
 
     if (glewInit() != GLEW_OK)
@@ -126,7 +126,7 @@ void Application::Run()
 
     double deltaTime = 0;
     double lastTime = glfwGetTime();
-    int fps = m_Config.MaxFPS;
+    //int fps = m_Config.MaxFPS;
 
     while (!glfwWindowShouldClose(m_Window))
     {
@@ -134,11 +134,13 @@ void Application::Run()
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
+        /*
         if (fps && deltaTime < 1.0 / fps)
         {
             Sleep((1.0 / fps - deltaTime) * 1000);
         }
         //std::cout << "(OPENGL) FPS: " << 1 / deltaTime << "\n";
+        */
 
         //glm::vec3 cameraPos = m_Camera.GetProjectedPosition();
         glm::vec3 cameraPos = m_Camera.GetPosition();
@@ -234,6 +236,8 @@ void Application::RenderImGui()
     ImGui::Text("Tile Generation");
 	ImGui::Checkbox("Frustum Based Tile Generation", &m_Config.FrustumBasedTileGeneration);
     ImGui::Text("Cache"); 
+    if (ImGui::Button("Trim Rnder Cache"))
+		m_TileManager.TrimRenderCache();
     if (ImGui::Button("Clear Render Cache"))
 	{
 		m_TileManager.ClearRenderCache();

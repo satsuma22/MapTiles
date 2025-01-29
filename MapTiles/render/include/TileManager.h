@@ -36,6 +36,7 @@ public:
 		const glm::vec4& plane);
 
 	void ClearRenderCache();
+	void TrimRenderCache();
 
 private:
 	void GenerateRasterTileFrustumNeighbours();
