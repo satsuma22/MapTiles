@@ -3,6 +3,7 @@
 
 ## Table of Contents
 - [About the Project](#about-the-project)
+- [Dependencies](#dependencies)
 - [Building](#building)
 - [Usage](#usage)
 - [Configuration](#configuration)
@@ -11,13 +12,42 @@
 ## About the Project
 MapTiles is a real-time 3D enviornment visualizer. It fetches geographical data from OpenStreetMap and constructs and renders a 3D scene in real-time.
 
+## Dependencies
+The project has a few dependencies but the only ones that you need to manually install are:
+* `GLFW`
+* `GLEW`
+* `OpenGL`
+
+On Ubuntu you can install these dependencies by running the following command:
+```bash
+sudo apt-get update
+sudo apt-get install libgl1-mesa-dev libglew-dev libglfw3-dev
+```
+On Windows it is recommended that you install these dependencies using `vcpkg`. After installing `vckpg`, run the following command:
+```cmd
+vcpkg.exe install glfw
+vcpkg.exe install glew
+```
+
+Every other dependency is either present in the repo or is available as a submodule.
+
 ## Building
+First clone the repo and it's submodules by running the command:
+```cmd
+git clone --recurse-submodules https://github.com/satsuma22/MapTiles.git
+```
 To build, create a build folder in the root directory and run the CMake script. This can be done using the following commands:
 ```cmd
 mkdir build
 cd build
 cmake ..
 ```
+On Windows, you will have to provide the path to the directory containing `vcpkg`:
+```cmd
+cmake .. -DPATH_TO_VCPKG=<path/to/vcpkg>
+```
+replace `<path/to/vcpkg>` with the path containing the `vcpkg` directory.
+
 Once the build is configured, you can build the project by running:
 ```cmd
 cmake --build .
