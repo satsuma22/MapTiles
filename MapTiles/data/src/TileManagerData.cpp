@@ -9,8 +9,11 @@
 
 #include "Timer.h"
 
+Tile3DData TileManagerData::EmptyTile3D = Tile3DData(0, 0, 0, 0, std::vector<glm::dvec3>());
+
 TileManagerData::TileManagerData() : m_config(nullptr)
 {
+	EmptyTile3D.valid = false;
 }
 
 TileManagerData::~TileManagerData()
@@ -69,8 +72,14 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 	OSMDataLoader loader(lat, lon, lat + size, lon + size);
 	loader.FetchOSMWays();
 
+	if (loader.GetErrorStatus() != 0 || loader.GetHTTPStatus() != 200)
+	{
+		std::cout << "[Tile Manager] Error fetching OSM data\n";
+		return EmptyTile3D;
+	}
+
 	OSMDataProcessor processor(loader);
-	Tile3DData tile3DData(lat, lon, lat + size, lon + size, processor.GetTileGeometry());
+	Tile3DData tile3DData(lat, lon, lat + size, lon + size, std::move(processor.GetTileGeometry()));
 
 	// Do the coordinate conversion here
 	{

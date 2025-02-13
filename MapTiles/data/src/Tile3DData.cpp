@@ -2,8 +2,8 @@
 
 #include "WGS84toCartesian.hpp"
 
-Tile3DData::Tile3DData(double latMin, double lonMin, double latMax, double lonMax, std::vector<glm::dvec3>& mesh)
-	: m_latMin(latMin), m_lonMin(lonMin), m_latMax(latMax), m_lonMax(lonMax)
+Tile3DData::Tile3DData(double latMin, double lonMin, double latMax, double lonMax, std::vector<glm::dvec3>&& mesh)
+	: m_latMin(latMin), m_lonMin(lonMin), m_latMax(latMax), m_lonMax(lonMax), valid(true)
 {
 	m_meshWGS = std::move(mesh);
 
