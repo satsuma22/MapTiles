@@ -48,10 +48,13 @@ void OSMRasterTileLoader::FetchTile()
 	httplib::Client client(m_url);
 	m_result = client.Get(m_query);
 
-	while ((int)m_result.error() || GetHTTPStatus() != 200)
+	int attempts = 0;
+
+	while ((int)m_result.error() || GetHTTPStatus() != 200 && attempts < 10)
 	{
 		// Avoid making too many requests at the same time
 		Sleep(50);
 		m_result = client.Get(m_query);
+		attempts++;
 	}
 }

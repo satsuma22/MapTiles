@@ -8,6 +8,7 @@ public:
 	RasterTileData(RasterTileData&& other) noexcept;
 	~RasterTileData();
 public:
+	bool valid;
 	int m_zoom;
 	int m_x, m_y;
 	int m_height, m_width;
