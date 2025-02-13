@@ -326,17 +326,20 @@ void TileManager::RemoveRasterTiles()
 	std::vector<RasterTileIndex> indices;
 	indices.resize(size);
 
-	// Get the indices to be removed from the queue
-	for (auto const& element : queue_raster_tiles) {
-		if (neighbour_set_raster_tile.find(element.first) == neighbour_set_raster_tile.end()) {
-			indices.push_back(element.first);
+	{
+		std::lock_guard<std::mutex> lockQueue(m_MutexQueueRasterTiles);
+	
+		// Get the indices to be removed from the queue
+		for (auto const& element : queue_raster_tiles) {
+			if (neighbour_set_raster_tile.find(element.first) == neighbour_set_raster_tile.end()) {
+				indices.push_back(element.first);
+			}
 		}
-	}
 
-	// Remove Raster Tiles from the queue
-	std::lock_guard<std::mutex> lockQueue(m_MutexQueueRasterTiles);
-	for (auto& index : indices) {
-		queue_raster_tiles.erase(index);
+		// Remove Raster Tiles from the queue
+		for (auto& index : indices) {
+			queue_raster_tiles.erase(index);
+		}
 	}
 
 	// clear the indices
@@ -364,19 +367,21 @@ void TileManager::RemoveTile3Ds()
 	std::vector<Tile3DIndex> indices;
 	indices.resize(size);
 
-	// Get the indices to be removed from the queue
-	for (auto const& element : queue_tile3Ds) {
-		if (neighbour_set_tile3D.find(element.first) == neighbour_set_tile3D.end()) {
-			indices.push_back(element.first);
+	{
+		std::lock_guard<std::mutex> lockQueue(m_MutexQueueTile3Ds);
+		
+		// Get the indices to be removed from the queue
+		for (auto const& element : queue_tile3Ds) {
+			if (neighbour_set_tile3D.find(element.first) == neighbour_set_tile3D.end()) {
+				indices.push_back(element.first);
+			}
+		}
+
+		// Remove Raster Tiles from the queue
+		for (auto& index : indices) {
+			queue_tile3Ds.erase(index);
 		}
 	}
-
-	// Remove Raster Tiles from the queue
-	std::lock_guard<std::mutex> lockQueue(m_MutexQueueTile3Ds);
-	for (auto& index : indices) {
-		queue_tile3Ds.erase(index);
-	}
-
 	// clear the indices
 	indices.clear();
 
@@ -398,6 +403,9 @@ void TileManager::RemoveTile3Ds()
 void TileManager::PruneNeighbourSetRasterTile()
 {
 	std::vector<RasterTileIndex> indices;
+
+	std::lock_guard<std::mutex> lockQueue(m_MutexQueueRasterTiles);
+	std::lock_guard<std::mutex> lockRequest(m_MutexRequestRasterTiles);
 
 	for (const auto& element : neighbour_set_raster_tile) {
 		if (queue_raster_tiles.find(element) != queue_raster_tiles.end()) {
@@ -421,6 +429,9 @@ void TileManager::PruneNeighbourSetRasterTile()
 void TileManager::PruneNeighbourSetTile3D()
 {
 	std::vector<Tile3DIndex> indices;
+
+	std::lock_guard<std::mutex> lockQueue(m_MutexQueueTile3Ds);
+	std::lock_guard<std::mutex> lockRequest(m_MutexRequestTile3Ds);
 
 	for (const auto& element : neighbour_set_tile3D) {
 		if (queue_tile3Ds.find(element) != queue_tile3Ds.end()) {
@@ -457,6 +468,7 @@ void TileManager::GetRasterTileNeighbours()
 		{
 			std::thread t(&TileManager::AddRasterTileToQueue, this, index);
 			t.detach();
+			std::lock_guard<std::mutex> lockRequest(m_MutexRequestRasterTiles);
 			requested_raster_tile.insert(index);
 			to_be_removed.insert(index);
 		}
@@ -485,6 +497,7 @@ void TileManager::GetTile3DNeighbours()
 		{
 			std::thread t(&TileManager::AddTile3DToQueue, this, index);
 			t.detach();
+			std::lock_guard<std::mutex> lockRequest(m_MutexRequestTile3Ds);
 			requested_tile3D.insert(index);
 			to_be_removed.insert(index);
 		}
@@ -501,9 +514,10 @@ void TileManager::AddRasterTileToQueue(RasterTileIndex index)
 	RasterTileData& tileData = tile_manager_data.GetRasterTile(index.zoom, index.x, index.y);
 	if (tileData.valid)
 	{
-		std::lock_guard<std::mutex> lock(m_MutexQueueRasterTiles);
+		std::lock_guard<std::mutex> lockQueue(m_MutexQueueRasterTiles);
 		queue_raster_tiles.emplace(index, tileData);
 	}
+	std::lock_guard<std::mutex> lockRequest(m_MutexRequestRasterTiles);
 	requested_raster_tile.erase(index);
 }
 
@@ -512,9 +526,10 @@ void TileManager::AddTile3DToQueue(Tile3DIndex index)
 	Tile3DData& tileData = tile_manager_data.GetTile3D(index.lat, index.lon);
 	if (tileData.valid)
 	{
-		std::lock_guard<std::mutex> lock(m_MutexQueueTile3Ds);
+		std::lock_guard<std::mutex> lockQueue(m_MutexQueueTile3Ds);
 		queue_tile3Ds.emplace(index, tileData);
 	}
+	std::lock_guard<std::mutex> lockRequest(m_MutexRequestTile3Ds);
 	requested_tile3D.erase(index);
 }
 
