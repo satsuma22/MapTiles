@@ -511,7 +511,7 @@ void TileManager::AddTiles(std::map<index_type, data_type>& queue_tiles, std::ma
 		render_type tile(element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
 
 		active_tiles[element.first] = tile;
-		cache_tiles[element.first] = tile;
+		cache_tiles.emplace(element.first, std::move(tile));
 
 		queue_tiles.erase(element.first);
 	}
