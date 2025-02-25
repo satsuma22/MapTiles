@@ -50,7 +50,7 @@ void OSMRasterTileLoader::FetchTile()
 
 	int attempts = 0;
 
-	while ((int)m_result.error() || GetHTTPStatus() != 200 && attempts < 10)
+	while ((int)m_result.error() || GetHTTPStatus() != 200 && attempts < 4)
 	{
 		// Avoid making too many requests at the same time
 		Sleep(50);
