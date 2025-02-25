@@ -66,6 +66,10 @@ private:
 		std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock, std::mutex& request_lock);
 	void AddRasterTileToQueue(RasterTileIndex index);
 	void AddTile3DToQueue(Tile3DIndex index);
+
+	template <typename index_type, typename data_type, typename render_type>
+	void AddTiles(std::map<index_type, data_type>& queue_tiles, std::map<index_type, render_type>& cache_tiles, std::map<index_type, render_type>& active_tiles,
+		std::mutex& queue_lock);
 	void AddRasterTiles();
 	void AddTile3D();
 
