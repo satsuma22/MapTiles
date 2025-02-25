@@ -505,9 +505,6 @@ void TileManager::AddTiles(std::map<index_type, data_type>& queue_tiles, std::ma
 	std::mutex& queue_lock)
 {
 	std::lock_guard<std::mutex> lockQueue(queue_lock);
-	if (queue_tiles.empty()) {
-		return;
-	}
 
 	while (!queue_tiles.empty()) {
 		auto& element = *(queue_tiles.begin());
