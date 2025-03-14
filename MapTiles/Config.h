@@ -23,7 +23,7 @@ struct GlobalConfig
 	int VSync = 1;
 
 	int MaxRasterTileRequestThreads = 10;
-	int MaxTile3DRequestThreads = 10;
+	int MaxTile3DRequestThreads = 4;
 
 	double RasterTileRenderCacheTrimDistance = 0.4;
 	double Tile3DRenderCacheTrimDistance = 0.4;
