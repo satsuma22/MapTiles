@@ -84,7 +84,7 @@ void TileManager::SetPosition(double _lat, double _lon, double _alt)
 {
 	cam_lat = _lat;
 	cam_lon = _lon;
-	altitude = _alt;
+	altitude = _alt * 0.5;
 }
 
 std::pair<std::array<double, 2>, std::array<double, 2>> TileManager::GetExtent()
