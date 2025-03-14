@@ -33,6 +33,7 @@ RasterTileData& TileManagerData::GetRasterTile(int zoom, int x, int y)
 	RasterTileIndex index = { zoom, x, y };
 	
 	{
+		std::lock_guard<std::mutex> lockCache(m_MutexRasterTiles);
 		if (m_RasterTileCache.find(index) != m_RasterTileCache.end())
 		{
 			return m_RasterTileCache.at(index);
@@ -70,6 +71,7 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 	Tile3DIndex index = { lat, lon };
 	
 	{
+		std::lock_guard<std::mutex> lockCache(m_MutexTile3Ds);
 		if (m_Tile3DCache.find(index) != m_Tile3DCache.end())
 		{
 			return m_Tile3DCache.at(index);
