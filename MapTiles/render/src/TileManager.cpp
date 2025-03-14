@@ -318,9 +318,8 @@ void TileManager::GenerateTile3DNeighbours()
 	}
 }
 
-template<typename index_type, typename data_type, typename render_type>
-inline void TileManager::RemoveTiles(std::map<index_type, render_type>& active_tiles, std::set<index_type>& neighbour_set, std::set<index_type>& requested_tiles, 
-	std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock)
+template<typename index_type, typename render_type>
+inline void TileManager::RemoveTiles(std::map<index_type, render_type>& active_tiles, std::set<index_type>& neighbour_set)
 {
 	int size = active_tiles.size();
 
@@ -328,33 +327,14 @@ inline void TileManager::RemoveTiles(std::map<index_type, render_type>& active_t
 	std::vector<index_type> indices;
 	indices.resize(size);
 
-	{
-		std::lock_guard<std::mutex> lockQueue(queue_lock);
-
-		// Get the indices to be removed from the queue
-		for (auto const& element : queue_tiles) {
-			if (neighbour_set.find(element.first) == neighbour_set.end()) {
-				indices.push_back(element.first);
-			}
-		}
-
-		// Remove Raster Tiles from the queue
-		for (auto& index : indices) {
-			queue_tiles.erase(index);
-		}
-	}
-
-	// clear the indices
-	indices.clear();
-
-	// Get the indices to be removed from the background list
+	// Get the indices to be removed from the active list
 	for (auto const& element : active_tiles) {
 		if (neighbour_set.find(element.first) == neighbour_set.end()) {
 			indices.push_back(element.first);
 		}
 	}
 
-	// Remove Raster Tiles from the background list
+	// Remove Raster Tiles from the active list
 	for (auto& index : indices) {
 		active_tiles.erase(index);
 	}
@@ -362,28 +342,21 @@ inline void TileManager::RemoveTiles(std::map<index_type, render_type>& active_t
 
 void TileManager::RemoveRasterTiles()
 {
-	RemoveTiles(active_raster_tile, neighbour_set_raster_tile, requested_raster_tile, queue_raster_tiles, m_MutexQueueRasterTiles);
+	RemoveTiles(active_raster_tile, neighbour_set_raster_tile);
 }
 
 void TileManager::RemoveTile3Ds()
 {
-	RemoveTiles(active_tile3D, neighbour_set_tile3D, requested_tile3D, queue_tile3Ds, m_MutexQueueTile3Ds);
+	RemoveTiles(active_tile3D, neighbour_set_tile3D);
 }
 
 template<typename index_type, typename data_type, typename render_type>
-void TileManager::PruneNeighbourSet(std::map<index_type, render_type>& active_tiles, std::set<index_type>& neighbour_set,
-	std::set<index_type>& requested_tiles, std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock, std::mutex& request_lock)
+void TileManager::PruneNeighbourSet(std::map<index_type, render_type>& active_tiles, std::set<index_type>& neighbour_set, std::map<index_type, std::future<data_type&>>& requested_tiles)
 {
 	std::vector<index_type> indices;
 
-	std::lock_guard<std::mutex> lockQueue(queue_lock);
-	std::lock_guard<std::mutex> lockRequest(request_lock);
-
 	for (const auto& element : neighbour_set) {
-		if (queue_tiles.find(element) != queue_tiles.end()) {
-			indices.push_back(element);
-		}
-		else if (active_tiles.find(element) != active_tiles.end()) {
+		if (active_tiles.find(element) != active_tiles.end()) {
 			indices.push_back(element);
 		}
 		else if (requested_tiles.find(element) != requested_tiles.end())
@@ -400,12 +373,12 @@ void TileManager::PruneNeighbourSet(std::map<index_type, render_type>& active_ti
 
 void TileManager::PruneNeighbourSetRasterTile()
 {
-	PruneNeighbourSet(active_raster_tile, neighbour_set_raster_tile, requested_raster_tile, queue_raster_tiles, m_MutexQueueRasterTiles, m_MutexRequestRasterTiles);
+	PruneNeighbourSet(active_raster_tile, neighbour_set_raster_tile, requested_raster_tiles);
 }
 
 void TileManager::PruneNeighbourSetTile3D()
 {
-	PruneNeighbourSet(active_tile3D, neighbour_set_tile3D, requested_tile3D, queue_tile3Ds, m_MutexQueueTile3Ds, m_MutexRequestTile3Ds);
+	PruneNeighbourSet(active_tile3D, neighbour_set_tile3D, requested_tile3Ds);
 }
 
 void TileManager::GetRasterTileNeighbours()
@@ -421,12 +394,9 @@ void TileManager::GetRasterTileNeighbours()
 			to_be_removed.insert(index);
 		}
 
-		else if (requested_raster_tile.size() < config->MaxRasterTileRequestThreads)
+		else if (requested_raster_tiles.size() < config->MaxRasterTileRequestThreads)
 		{
-			std::thread t(&TileManager::AddRasterTileToQueue, this, index);
-			t.detach();
-			std::lock_guard<std::mutex> lockRequest(m_MutexRequestRasterTiles);
-			requested_raster_tile.insert(index);
+			requested_raster_tiles.emplace(index, std::async(std::launch::async, &TileManager::GetRasterTile, this, index));
 			to_be_removed.insert(index);
 		}
 	}
@@ -450,12 +420,9 @@ void TileManager::GetTile3DNeighbours()
 			to_be_removed.insert(index);
 		}
 
-		else if (requested_tile3D.size() < config->MaxTile3DRequestThreads)
+		else if (requested_tile3Ds.size() < config->MaxTile3DRequestThreads)
 		{
-			std::thread t(&TileManager::AddTile3DToQueue, this, index);
-			t.detach();
-			std::lock_guard<std::mutex> lockRequest(m_MutexRequestTile3Ds);
-			requested_tile3D.insert(index);
+			requested_tile3Ds.emplace(index, std::async(std::launch::async, &TileManager::GetTile3D, this, index));
 			to_be_removed.insert(index);
 		}
 	}
@@ -466,65 +433,54 @@ void TileManager::GetTile3DNeighbours()
 	}
 }
 
-template<typename index_type, typename data_type>
-void TileManager::AddTilesToQueue(index_type index, std::set<index_type>& requested_tiles, std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock, std::mutex& request_lock)
+RasterTileData& TileManager::GetRasterTile(RasterTileIndex index)
 {
-	data_type* tileData = nullptr;
+	RasterTileData& tileData = tile_manager_data.GetRasterTile(index.zoom, index.x, index.y);
 
-	if constexpr (std::is_same_v<index_type, RasterTileIndex>)
-	{
-		tileData = &tile_manager_data.GetRasterTile(index.zoom, index.x, index.y);
-	}
-	else if constexpr (std::is_same_v<index_type, Tile3DIndex>)
-	{
-		tileData = &tile_manager_data.GetTile3D(index.lat, index.lon);
-	}
-
-	if (tileData->valid)
-	{
-		std::lock_guard<std::mutex> lockQueue(queue_lock);
-		queue_tiles.emplace(index, *tileData);
-	}
-	std::lock_guard<std::mutex> lockRequest(request_lock);
-	requested_tiles.erase(index);
+	return tileData;
 }
 
-
-void TileManager::AddRasterTileToQueue(RasterTileIndex index)
+Tile3DData& TileManager::GetTile3D(Tile3DIndex index)
 {
-	AddTilesToQueue(index, requested_raster_tile, queue_raster_tiles, m_MutexQueueRasterTiles, m_MutexRequestRasterTiles);
-}
+	Tile3DData& tileData = tile_manager_data.GetTile3D(index.lat, index.lon);
 
-void TileManager::AddTile3DToQueue(Tile3DIndex index)
-{
-	AddTilesToQueue(index, requested_tile3D, queue_tile3Ds, m_MutexQueueTile3Ds, m_MutexRequestTile3Ds);
+	return tileData;
 }
 
 template <typename index_type, typename data_type, typename render_type>
-void TileManager::AddTiles(std::map<index_type, data_type>& queue_tiles, std::map<index_type, render_type>& cache_tiles, std::map<index_type, render_type>& active_tiles,
-	std::mutex& queue_lock)
+void TileManager::AddTiles(std::map<index_type, std::future<data_type&>>& requested_tiles, std::map<index_type, render_type>& cache_tiles, std::map<index_type, render_type>& active_tiles)
 {
-	std::lock_guard<std::mutex> lockQueue(queue_lock);
+	std::vector<index_type> to_be_removed;
 
-	while (!queue_tiles.empty()) {
-		auto& element = *(queue_tiles.begin());
-		render_type tile(element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
+	for (auto& [idx, future] : requested_tiles)
+	{
+		if (future.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
+		{
+			auto& tileData = future.get();
+			if (tileData.valid)
+			{
+				render_type render_tile(tileData, config->ReferencePoint.lat, config->ReferencePoint.lon);
+				cache_tiles[idx] = render_tile;
+				active_tiles[idx] = render_tile;
+			}
+			to_be_removed.push_back(idx);
+		}
+	}
 
-		active_tiles[element.first] = tile;
-		cache_tiles.emplace(element.first, std::move(tile));
-
-		queue_tiles.erase(element.first);
+	for (const auto& idx : to_be_removed)
+	{
+		requested_tiles.erase(idx);
 	}
 }
 
 void TileManager::AddRasterTiles()
 {
-	AddTiles(queue_raster_tiles, m_RasterTileCache, active_raster_tile, m_MutexQueueRasterTiles);
+	AddTiles(requested_raster_tiles, m_RasterTileCache, active_raster_tile);
 }
 
 void TileManager::AddTile3D()
 {
-	AddTiles(queue_tile3Ds, m_Tile3DCache, active_tile3D, m_MutexQueueTile3Ds);
+	AddTiles(requested_tile3Ds, m_Tile3DCache, active_tile3D);
 }
 
 void TileManager::ClearRenderCache()

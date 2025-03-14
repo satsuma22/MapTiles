@@ -12,6 +12,8 @@
 #include <vector>
 #include <array>
 #include <set>
+#include <map>
+#include <future>
 
 class TileManager
 {
@@ -47,29 +49,24 @@ private:
 	void GenerateRasterTileNeighbours();
 	void GenerateTile3DNeighbours();
 
-	template <typename index_type, typename data_type, typename render_type>
-	void RemoveTiles(std::map<index_type, render_type>& active_tiles, std::set<index_type>& neighbour_set,
-		std::set<index_type>& requested_tiles, std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock);
+	template <typename index_type, typename render_type>
+	void RemoveTiles(std::map<index_type, render_type>& active_tiles, std::set<index_type>& neighbour_set);
 	void RemoveRasterTiles();
 	void RemoveTile3Ds();
 
 	template <typename index_type, typename data_type, typename render_type>
-	void PruneNeighbourSet(std::map<index_type, render_type>& active_tiles, std::set<index_type>& neighbour_set,
-		std::set<index_type>& requested_tiles, std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock, std::mutex& request_lock);
+	void PruneNeighbourSet(std::map<index_type, render_type>& active_tiles, std::set<index_type>& neighbour_set, std::map<index_type, std::future<data_type&>>& requested_tiles);
 	void PruneNeighbourSetRasterTile();
 	void PruneNeighbourSetTile3D();
+	
 	void GetRasterTileNeighbours();
 	void GetTile3DNeighbours();
 
-	template <typename index_type, typename data_type>
-	void AddTilesToQueue(index_type index, std::set<index_type>& requested_tiles,
-		std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock, std::mutex& request_lock);
-	void AddRasterTileToQueue(RasterTileIndex index);
-	void AddTile3DToQueue(Tile3DIndex index);
+	RasterTileData& GetRasterTile(RasterTileIndex index);
+	Tile3DData& GetTile3D(Tile3DIndex index);
 
 	template <typename index_type, typename data_type, typename render_type>
-	void AddTiles(std::map<index_type, data_type>& queue_tiles, std::map<index_type, render_type>& cache_tiles, std::map<index_type, render_type>& active_tiles,
-		std::mutex& queue_lock);
+	void AddTiles(std::map<index_type, std::future<data_type&>>& requested_tiles, std::map<index_type, render_type>& cache_tiles, std::map<index_type, render_type>& active_tiles);
 	void AddRasterTiles();
 	void AddTile3D();
 
@@ -91,26 +88,21 @@ private:
 
 	std::set<RasterTileIndex> neighbour_set_raster_tile;
 	std::set<Tile3DIndex> neighbour_set_tile3D;
-	std::set<RasterTileIndex> requested_raster_tile;
-	std::set<Tile3DIndex> requested_tile3D;
+	
 	std::map<RasterTileIndex, RasterTileRender> active_raster_tile;
 	std::map<Tile3DIndex, Tile3DRender> active_tile3D;
-	std::map<RasterTileIndex, RasterTileData&> queue_raster_tiles;
-	std::map<Tile3DIndex, Tile3DData&> queue_tile3Ds;
+	
+	std::map<RasterTileIndex, std::future<RasterTileData&>> requested_raster_tiles;
+	std::map<Tile3DIndex, std::future<Tile3DData&>> requested_tile3Ds;
 
-	mutable std::mutex m_MutexRequestRasterTiles;
-	mutable std::mutex m_MutexRequestTile3Ds;
-
-	mutable std::mutex m_MutexQueueRasterTiles;
-	mutable std::mutex m_MutexQueueTile3Ds;
+	std::map<RasterTileIndex, RasterTileRender> m_RasterTileCache;
+	std::map<Tile3DIndex, Tile3DRender> m_Tile3DCache;
 
 	std::array<glm::dvec4, 6> frustum_planes;
 	glm::dvec3 frustum_bbox_min, frustum_bbox_max;
 	double frustum_min_lat, frustum_max_lat, frustum_min_lon, frustum_max_lon;
 	std::array<double, 2> min_extent, max_extent;
 
-	std::map<RasterTileIndex, RasterTileRender> m_RasterTileCache;
-	std::map<Tile3DIndex, Tile3DRender> m_Tile3DCache;
 };
 
 
